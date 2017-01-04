@@ -1,17 +1,9 @@
 
 import scipy as sp
 
-def islands(in_list, low, high=None):
-    """Returns indexes of values between low and high (optional) borders. in_list must be scipy array"""
-    if len(in_list)==0:
-        return []
-    if high == None:
-        high = max(in_list)
-    i_list = sp.zeros(len(in_list), dtype=int)
-    for i in range (0,len(i_list)):
-        i_list[i] = i
-        
-    selected = i_list[(in_list >= low) * (in_list <= high)]
+   
+def borders(selected):
+    """Returns pairs of lists of first and last element of ranges of consecutive integers in a list"""
     
     selected_sh = sp.zeros(len(selected), dtype=int)
     for i in range(1,len(selected)):
@@ -38,6 +30,19 @@ def islands(in_list, low, high=None):
         return i_borders
     else:
         return []
+        
+def islands(in_list, low, high=None):
+    """Returns indexes of values between low and high (optional) borders. in_list must be scipy array"""
+    if len(in_list)==0:
+        return []
+    if high == None:
+        high = max(in_list)
+    i_list = sp.zeros(len(in_list), dtype=int)
+    for i in range (0,len(i_list)):
+        i_list[i] = i
+        
+    selected = i_list[(in_list >= low) * (in_list <= high)]
+    return borders(selected)
 
 def islands_to_intervals(tcol,islands):
     """Translate index-written intervals into time-written intervals"""
