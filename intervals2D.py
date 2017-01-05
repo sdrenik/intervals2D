@@ -1,5 +1,13 @@
+# Module for working with intervals in time-traces of signals which do not share the same
+# time column.
+
+# Aleksander Drenik
+# JSI Ljubljana, IPP Garching
+# Jan 2017
 
 import scipy as sp
+
+version = '1.01'
 
    
 def borders(selected):
@@ -52,9 +60,12 @@ def islands_to_intervals(tcol,islands):
     return intervals
 
 def make_intervals(tcol, ycol, low, high=None):
+    """wrapper function for islands and islands_to_intervals.
+    Returns x-axis intervals where y-value of signal is greater than low and lesser than high if high is specified."""
     isl = islands(ycol, low, high)
     ivls = islands_to_intervals(tcol, isl)
     return ivls
+    
 #Below defined are functions for processing intervals
 #Intervals are in the forms of lists [....,[t1,t2],....]
 #Where t1 and t2 are the beginning and the end of an interval
@@ -103,7 +114,7 @@ def IntervalCleanup(b):
     return a
 
 def focus(x_list, y_list, area):
-    #returns x and y columns where x is within defined area
+    """returns x and y columns where x is within defined area"""
     
     x_col = sp.array(x_list)
     y_col = sp.array(y_list)
@@ -113,6 +124,7 @@ def focus(x_list, y_list, area):
     return x_col[selection], y_col[selection]
     
 def pin_point(input_list, sought_value):
+    """In input_list, finds nearest value to sought_value and returns its index."""
     input_col = sp.array(input_list)
     temp_list = list(map(abs, input_col - sought_value))
     nearest_index = temp_list.index(min(temp_list))
