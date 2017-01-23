@@ -7,13 +7,28 @@
 
 import scipy as sp
 
-version = '1.01'
+version = '1.02'
+
+
+# new version of borders:
+
+def borders(inlist):
+    if len(inlist) == 0:
+        return []
+    borders = []
+    b1 = inlist[0]
+    for i in range(1,len(inlist)):
+        if inlist[i] > inlist[i-1] + 1:
+            borders.append([b1, inlist[i -1]])
+            b1 = inlist[i]
+    borders.append([b1, inlist[-1]])
+    return borders
 
    
-def borders(selected):
+#def borders(selected):
     """Returns pairs of lists of first and last element of ranges of consecutive integers in a list"""
     
-    selected_sh = sp.zeros(len(selected), dtype=int)
+    """selected_sh = sp.zeros(len(selected), dtype=int)
     for i in range(1,len(selected)):
         selected_sh[i] = selected[i-1]
     selected_i = sp.zeros(len(selected), dtype=int)
@@ -37,7 +52,7 @@ def borders(selected):
     
         return i_borders
     else:
-        return []
+        return []"""
         
 def islands(in_list, low, high=None):
     """Returns indexes of values between low and high (optional) borders. in_list must be scipy array"""
