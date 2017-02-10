@@ -128,6 +128,31 @@ def IntervalCleanup(b):
         a.append([a1,a2])
     return a
 
+def InvertIntervals(a, frame=None):
+    """Returns intervals outside of input interval. Frame sets start and stop time of intervals"""
+    outint = []
+    
+    if frame != None:
+        
+        if frame[0] < a[0][0]:
+            outint = [[frame[0], a[0][0]]]
+    
+    for i in range(1, len(a)):
+        outint.append([a[i - 1][1], a[i][0]])
+    
+    if frame != None:
+        if frame[1] > a[-1][1]:
+            outint.append([a[-1][1], frame[1]])
+    
+    return outint
+    
+def IntervalDifference(a, b):
+    """Returns intervals of a which do not overlap with intervals of b"""
+    frame = [min(a[0][0], b[0][0]), max(a[-1][1],b[-1][1])]
+    b_inv = InvertIntervals(b, frame)
+    return IntervalIntersection(a, b_inv)
+    
+
 def focus(x_list, y_list, area):
     """returns x and y columns where x is within defined area"""
     
