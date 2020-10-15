@@ -169,3 +169,124 @@ def pin_point(input_list, sought_value):
     temp_list = list(map(abs, input_col - sought_value))
     nearest_index = temp_list.index(min(temp_list))
     return nearest_index
+
+# Classes which define intervals as a variable
+
+class Interval:
+    
+    def __init__(self, interval):
+        
+        self.__integrity_check(interval)
+        self._t_start = interval[0]
+        self._t_stop = interval[1]
+        
+    def __integrity_check(self, interval):
+        
+        try:
+            number_of_elements = len(interval)
+        except:
+            raise TypeError("Input data must be a list-like object.")
+            
+        if number_of_elements < 2:
+            raise ValueError("t-start and t-stop are required to define the interval.")
+            
+        if interval[0] > interval[1]:
+            raise ValueError("t-start must be less or equal t-stop.")
+            
+    @property
+    def interval(self):
+        return [self._t_start, self._t_stop]
+    
+    def __repr__(self):
+        return str([self.interval[0], self.interval[1]])
+    
+    def __getitem__(self, key):
+        return self.interval[key]
+    
+    def __len__(self):
+        return len(self.interval)
+    
+# class celotnih intervalov
+# mogoče se posamezen interval zapakira kot notranji class
+class Intervals:
+    
+    def __init__(self, intervals):
+        
+        self._intervals = []
+        self.__integrity_check(intervals)
+        
+        for interval in intervals:
+            self.add_interval(interval)
+            
+    def __integrity_check(self, intervals):
+        
+        try:
+            number_of_elements = len(intervals)
+        except:
+            raise TypeError("Input data must be a list-like object.")
+        if type(intervals) == str:
+            raise TypeError("Input data must be a list-like object.")
+            
+    def add_interval(self, interval):
+        
+        self._intervals.append(Interval(interval))
+        
+    @property
+    def intervals(self):
+        return self._intervals
+    
+    def __repr__(self):
+        return('[%s]' %', '.join(map(str, self.intervals)))
+    
+    def __getitem__(self, key):
+        return self.intervals[key]
+    
+    def __len__(self):
+        return len(self.intervals)
+    
+    def __iadd__(self, new_interval):
+        self.add_interval(new_interval)
+        return self
+    
+    def __index__(self, interval):
+        return self._intervals.index(interval)
+       
+    def __add__(self, other):
+        if other.__class__.__name__ != "Intervals":
+            other_intervals = Intervals(other)
+        else:
+            other_intervals = other
+        return Intervals(self._intervals + other_intervals._intervals)
+                    
+    def __radd__(self, other):
+        if other.__class__.__name__ != "Intervals":
+            other_intervals = Intervals(other)
+        else:
+            other_intervals = other
+        return Intervals(other_intervals._intervals + self._intervals)
+    
+    def __and__(self, other):
+        if other.__class__.__name__ != "Intervals":
+            other_intervals = Intervals(other)
+        else:
+            other_intervals = other
+        return Intervals(IntervalsIntersection(self, other))
+    
+    def __rand__(self, other):
+        if other.__class__.__name__ != "Intervals":
+            other_intervals = Intervals(other)
+        else:
+            other_intervals = other
+        return Intervals(IntervalsIntersection(other, self))
+        
+    def sort(self):
+        self._intervals = sorted(self._intervals, key=first_element)
+        
+    def cleanup(self):
+        self._intervals = IntervalCleanup(self.intervals)
+        
+    def invert(self, frame=None):
+        self._intervals = InvertIntervals(self.intervals, frame=frame)
+        
+def first_element(val):
+    return val[0]
